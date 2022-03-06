@@ -1,6 +1,7 @@
 package user
 
 import (
+	"fmt"
 	"github.com/google/uuid"
 )
 
@@ -24,17 +25,8 @@ type Address struct {
 	State string
 }
 
-func init() {
-	user := User{
-		Id:        uuid.New().String(),
-		FirstName: "Bo",
-		LastName:  "Jangles",
-		Address: &Address{
-			City:  "New Orleans",
-			State: "Louisiana",
-		},
-	}
-	userMap[user.Id] = &user
+func (a *Address) String() string {
+	return fmt.Sprintf("{City:%s, State:%s}", a.City, a.State)
 }
 
 func GetUser(id string) *User {
