@@ -1,4 +1,4 @@
-module go-microservice-examples/baseline
+module go-microservice-examples
 
 go 1.17
 

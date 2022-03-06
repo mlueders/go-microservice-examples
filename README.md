@@ -20,6 +20,19 @@ project:
 want to experiment with
 - json encoding/decoding
 - web framework
+  - https://github.com/diyan/go-web-framework-comparison
+  - https://github.com/go-kit/kit
+  - https://github.com/labstack/echo
+  - https://www.gorillatoolkit.org/
+  - https://github.com/goji/goji
+  - https://github.com/gin-gonic/gin
+  - https://github.com/gocraft/work
+  - https://gobuffalo.io/en/
+  - https://github.com/paulbellamy/mango
+  - https://goa.design/
+  - https://github.com/zeromicro/go-zero
+  - https://gofiber.io/
+  - https://revel.github.io/
 - testing
   - component tests (use http client to invoke rest calls)
   - core tests (tests directly calling the service, no http)

@@ -1,7 +1,7 @@
 package main
 
 import (
-	"go-microservice-examples/baseline/user"
+	"go-microservice-examples/user"
 	"net/http"
 )
 
