@@ -7,13 +7,18 @@ import (
 	"strings"
 )
 
-func SetupUserController() {
-	http.HandleFunc("/users", UserHandler)
-	http.HandleFunc("/users/", UserWithIdHandler)
+type userController struct {
+	service *UserService
 }
 
-func handleGetUsers(response http.ResponseWriter, request *http.Request) {
-	usersJson, err := json.Marshal(GetUsers())
+func SetupUserController(service *UserService) {
+	controller := userController{service: service}
+	http.HandleFunc("/users", controller.userHandler)
+	http.HandleFunc("/users/", controller.userWithIdHandler)
+}
+
+func (c *userController) handleGetUsers(response http.ResponseWriter, request *http.Request) {
+	usersJson, err := json.Marshal(c.service.GetUsers())
 	if err != nil {
 		response.WriteHeader(http.StatusInternalServerError)
 		return
@@ -22,9 +27,9 @@ func handleGetUsers(response http.ResponseWriter, request *http.Request) {
 	response.Write(usersJson)
 }
 
-func handleGetUser(response http.ResponseWriter, request *http.Request) {
+func (c *userController) handleGetUser(response http.ResponseWriter, request *http.Request) {
 	id := strings.TrimPrefix(request.URL.Path, "/users/")
-	user := GetUser(id)
+	user := c.service.GetUser(id)
 	if user == nil {
 		response.WriteHeader(http.StatusNotFound)
 	}
@@ -37,7 +42,7 @@ func handleGetUser(response http.ResponseWriter, request *http.Request) {
 	response.Write(userJson)
 }
 
-func handlePostUser(response http.ResponseWriter, request *http.Request) {
+func (c *userController) handlePostUser(response http.ResponseWriter, request *http.Request) {
 	var newUser AddUserRequest
 	bodyBytes, err := ioutil.ReadAll(request.Body)
 	if err != nil {
@@ -49,7 +54,7 @@ func handlePostUser(response http.ResponseWriter, request *http.Request) {
 		response.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	addedUser := AddUser(&newUser)
+	addedUser := c.service.AddUser(&newUser)
 	addedUserJson, err := json.Marshal(addedUser)
 	if err != nil {
 		response.WriteHeader(http.StatusInternalServerError)
@@ -58,25 +63,25 @@ func handlePostUser(response http.ResponseWriter, request *http.Request) {
 	response.Write(addedUserJson)
 }
 
-func handleDeleteUser(_ http.ResponseWriter, request *http.Request) {
+func (c *userController) handleDeleteUser(_ http.ResponseWriter, request *http.Request) {
 	id := strings.TrimPrefix(request.URL.Path, "/users/")
-	RemoveUser(id)
+	c.service.RemoveUser(id)
 }
 
-func UserHandler(response http.ResponseWriter, request *http.Request) {
+func (c *userController) userHandler(response http.ResponseWriter, request *http.Request) {
 	switch request.Method {
 	case http.MethodGet:
-		handleGetUsers(response, request)
+		c.handleGetUsers(response, request)
 	case http.MethodPost:
-		handlePostUser(response, request)
+		c.handlePostUser(response, request)
 	}
 }
 
-func UserWithIdHandler(response http.ResponseWriter, request *http.Request) {
+func (c *userController) userWithIdHandler(response http.ResponseWriter, request *http.Request) {
 	switch request.Method {
 	case http.MethodGet:
-		handleGetUser(response, request)
+		c.handleGetUser(response, request)
 	case http.MethodDelete:
-		handleDeleteUser(response, request)
+		c.handleDeleteUser(response, request)
 	}
 }

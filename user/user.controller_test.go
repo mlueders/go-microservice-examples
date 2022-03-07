@@ -11,10 +11,11 @@ import (
 )
 
 func TestHttpHappyPath(t *testing.T) {
+	controller := userController{service: NewUserService()}
 	addUserRequest := AddUserRequest{
 		FirstName: "first",
 		LastName:  "last",
-		Address:   &Address{
+		Address:   Address{
 			City:  "the city",
 			State: "the state",
 		},
@@ -26,7 +27,7 @@ func TestHttpHappyPath(t *testing.T) {
 
 		request, _ := http.NewRequest(http.MethodPost, "/users", bytes.NewReader(requestBody))
 		response := httptest.NewRecorder()
-		handlePostUser(response, request)
+		controller.handlePostUser(response, request)
 		json.Unmarshal(response.Body.Bytes(), &addUserResponse)
 
 		if addUserResponse.Id == "" {
@@ -40,7 +41,7 @@ func TestHttpHappyPath(t *testing.T) {
 	t.Run("should GET user", func(t *testing.T) {
 		request, _ := http.NewRequest(http.MethodGet, fmt.Sprintf("/users/%s", addUserResponse.Id), nil)
 		response := httptest.NewRecorder()
-		handleGetUser(response, request)
+		controller.handleGetUser(response, request)
 		getUserResponse := User{}
 		json.Unmarshal(response.Body.Bytes(), &getUserResponse)
 
@@ -52,11 +53,11 @@ func TestHttpHappyPath(t *testing.T) {
 	t.Run("should DELETE user", func(t *testing.T) {
 		request, _ := http.NewRequest(http.MethodDelete, fmt.Sprintf("/users/%s", addUserResponse.Id), nil)
 		response := httptest.NewRecorder()
-		handleDeleteUser(response, request)
+		controller.handleDeleteUser(response, request)
 
 		request, _ = http.NewRequest(http.MethodGet, fmt.Sprintf("/users/%s", addUserResponse.Id), nil)
 		response = httptest.NewRecorder()
-		handleGetUser(response, request)
+		controller.handleGetUser(response, request)
 
 		if response.Code != http.StatusNotFound {
 			t.Errorf("Response == %q, want %q", response.Code, http.StatusNotFound)

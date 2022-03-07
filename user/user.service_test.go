@@ -4,17 +4,19 @@ import (
 	"testing"
 )
 
+var service = NewUserService()
+
 func TestShouldAddUser(t *testing.T) {
 	userToAdd := AddUserRequest{
 		FirstName: "first",
 		LastName:  "last",
-		Address: &Address{
+		Address: Address{
 			City:  "Austin",
 			State: "Texas",
 		},
 	}
 
-	addedUser := AddUser(&userToAdd)
+	addedUser := service.AddUser(&userToAdd)
 	if addedUser == nil {
 		t.Errorf("AddUser returned nil")
 	}
@@ -26,9 +28,6 @@ func TestShouldAddUser(t *testing.T) {
 	}
 	if addedUser.LastName != userToAdd.LastName {
 		t.Errorf("LastName == %q, want %q", addedUser.LastName, userToAdd.LastName)
-	}
-	if addedUser.Address == nil {
-		t.Errorf("AddUser returned user with no address")
 	}
 	if addedUser.Address.State != userToAdd.Address.State {
 		t.Errorf("Address.State == %q, want %q", addedUser.Address.State, userToAdd.Address.State)
@@ -42,14 +41,14 @@ func TestShouldRetrieveAddedUser(t *testing.T) {
 	userToAdd := AddUserRequest{
 		FirstName: "first",
 		LastName:  "last",
-		Address: &Address{
+		Address: Address{
 			City:  "Austin",
 			State: "Texas",
 		},
 	}
 
-	addedUser := AddUser(&userToAdd)
-	retrievedUser := GetUser(addedUser.Id)
+	addedUser := service.AddUser(&userToAdd)
+	retrievedUser := service.GetUser(addedUser.Id)
 
 	if retrievedUser == nil {
 		t.Errorf("GetUser returned nil")
@@ -59,9 +58,6 @@ func TestShouldRetrieveAddedUser(t *testing.T) {
 	}
 	if retrievedUser.LastName != userToAdd.LastName {
 		t.Errorf("LastName == %q, want %q", retrievedUser.LastName, userToAdd.LastName)
-	}
-	if retrievedUser.Address == nil {
-		t.Errorf("AddUser returned user with no address")
 	}
 	if retrievedUser.Address.State != userToAdd.Address.State {
 		t.Errorf("Address.State == %q, want %q", retrievedUser.Address.State, userToAdd.Address.State)
@@ -75,20 +71,20 @@ func TestShouldDeleteUser(t *testing.T) {
 	userToAdd := AddUserRequest{
 		FirstName: "first",
 		LastName:  "last",
-		Address: &Address{
+		Address: Address{
 			City:  "Austin",
 			State: "Texas",
 		},
 	}
 
-	addedUser := AddUser(&userToAdd)
+	addedUser := service.AddUser(&userToAdd)
 	if addedUser == nil {
 		t.Errorf("AddUser returned nil")
 	}
 
-	RemoveUser(addedUser.Id)
+	service.RemoveUser(addedUser.Id)
 
-	retrievedUser := GetUser(addedUser.Id)
+	retrievedUser := service.GetUser(addedUser.Id)
 	if retrievedUser != nil {
 		t.Errorf("GetUser returned user after removal")
 	}

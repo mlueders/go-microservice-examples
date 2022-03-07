@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	user.SetupUserController()
+	user.SetupUserController(user.NewUserService())
 	http.ListenAndServe(":8090", nil)
 }
 

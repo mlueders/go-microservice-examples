@@ -1,57 +1,42 @@
 package user
 
 import (
-	"fmt"
 	"github.com/google/uuid"
 )
 
-var userMap = map[string]*User{}
-
-type AddUserRequest struct {
-	FirstName string
-	LastName  string
-	Address   *Address
+type UserService struct {
+	userMap map[string]*User
 }
 
-type User struct {
-	Id        string
-	FirstName string
-	LastName  string
-	Address   *Address
+func NewUserService() *UserService {
+	return &UserService{
+		userMap: map[string]*User{},
+	}
 }
 
-type Address struct {
-	City  string
-	State string
+func (s *UserService) GetUser(id string) *User {
+	return s.userMap[id]
 }
 
-func (a *Address) String() string {
-	return fmt.Sprintf("{City:%s, State:%s}", a.City, a.State)
-}
-
-func GetUser(id string) *User {
-	return userMap[id]
-}
-
-func GetUsers() []*User {
-	userList := make([]*User, 0, len(userMap))
-	for _, val := range userMap {
+func (s *UserService) GetUsers() []*User {
+	userList := make([]*User, 0, len(s.userMap))
+	for _, val := range s.userMap {
 		userList = append(userList, val)
 	}
 	return userList
 }
 
-func AddUser(userToAdd *AddUserRequest) *User {
+func (s *UserService) AddUser(userToAdd *AddUserRequest) *User {
 	user := User{
 		Id:        uuid.New().String(),
 		FirstName: userToAdd.FirstName,
 		LastName:  userToAdd.LastName,
 		Address:   userToAdd.Address,
 	}
-	userMap[user.Id] = &user
+	s.userMap[user.Id] = &user
 	return &user
 }
 
-func RemoveUser(id string) {
-	delete(userMap, id)
+func (s *UserService) RemoveUser(id string) {
+	delete(s.userMap, id)
 }
