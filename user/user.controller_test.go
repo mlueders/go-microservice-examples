@@ -11,7 +11,9 @@ import (
 )
 
 func TestHttpHappyPath(t *testing.T) {
-	controller := userController{service: NewUserService()}
+	service := NewUserService(repository)
+	controller := &userController{service: service}
+
 	addUserRequest := AddUserRequest{
 		FirstName: "first",
 		LastName:  "last",

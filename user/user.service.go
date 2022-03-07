@@ -5,25 +5,21 @@ import (
 )
 
 type UserService struct {
-	userMap map[string]*User
+	repository *UserRepository
 }
 
-func NewUserService() *UserService {
+func NewUserService(repository *UserRepository) *UserService {
 	return &UserService{
-		userMap: map[string]*User{},
+		repository: repository,
 	}
 }
 
 func (s *UserService) GetUser(id string) *User {
-	return s.userMap[id]
+	return s.repository.FindUserById(id)
 }
 
 func (s *UserService) GetUsers() []*User {
-	userList := make([]*User, 0, len(s.userMap))
-	for _, val := range s.userMap {
-		userList = append(userList, val)
-	}
-	return userList
+	return s.repository.FindAllUsers()
 }
 
 func (s *UserService) AddUser(userToAdd *AddUserRequest) *User {
@@ -33,10 +29,10 @@ func (s *UserService) AddUser(userToAdd *AddUserRequest) *User {
 		LastName:  userToAdd.LastName,
 		Address:   userToAdd.Address,
 	}
-	s.userMap[user.Id] = &user
+	s.repository.InsertUser(&user)
 	return &user
 }
 
 func (s *UserService) RemoveUser(id string) {
-	delete(s.userMap, id)
+	s.repository.DeleteUser(id)
 }

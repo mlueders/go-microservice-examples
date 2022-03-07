@@ -7,7 +7,7 @@ https://medium.com/agrea-technogies/basic-testing-patterns-in-go-d8501e360197
 https://levelup.gitconnected.com/go-error-best-practice-f0864c5c2385
 https://github.com/swaggo/http-swagger
 https://gorm.io/docs/models.html
-
+https://github.com/pkg/errors
 
 to learn
 - context
@@ -44,6 +44,10 @@ want to experiment with
 - swagger
 - config
 - dependency injection
+  - https://github.com/google/wire
+  - https://blog.drewolson.org/go-dependency-injection-with-wire
+  - https://github.com/uber-go/dig
+  - https://pkg.go.dev/go.uber.org/fx
 - building - what options are there to hook into the build process.. could a container be started as part of build
 - service to service correlation, over rest and over messaging
 - authentication
@@ -54,7 +58,9 @@ want to experiment with
 - optimistic locking
 - struct copying - FooResponse vs AddFooRequest... FooEntity vs FooApi, need mechanism to copy most of a struct to a different struct with minimal manual intervention
 - paging
-
+- how to handle optional data - input (json) and storage (sql, etc)
+  - https://github.com/golang/go/issues/11939
+  - https://github.com/guregu/null
 
 struct copy options
 https://github.com/jinzhu/copier
