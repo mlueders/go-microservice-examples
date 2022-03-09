@@ -6,17 +6,17 @@ import (
 	"log"
 )
 
-type UserRepository struct {
+type Repository struct {
 	db *sql.DB
 }
 
-func NewUserRepository(db *sql.DB) *UserRepository {
-	return &UserRepository{
+func NewRepository(db *sql.DB) *Repository {
+	return &Repository{
 		db: db,
 	}
 }
 
-func (r *UserRepository) CreateTables() {
+func (r *Repository) CreateTables() {
 	createUserTableSQL := `CREATE TABLE user (
 		"id" uuid NOT NULL PRIMARY KEY,
 		"first_name" TEXT,
@@ -35,7 +35,7 @@ func (r *UserRepository) CreateTables() {
 	}
 }
 
-func (r *UserRepository) InsertUser(user *User) {
+func (r *Repository) InsertUser(user *User) {
 	statement, err := r.db.Prepare(`INSERT INTO user(id, first_name, last_name, address_city, address_state) VALUES (?, ?, ?, ?, ?)`)
 	if err != nil {
 		log.Fatalln(err.Error())
@@ -46,7 +46,7 @@ func (r *UserRepository) InsertUser(user *User) {
 	}
 }
 
-func (r *UserRepository) DeleteUser(id string) {
+func (r *Repository) DeleteUser(id string) {
 	statement, err := r.db.Prepare(`DELETE FROM user WHERE id = ?`)
 	if err != nil {
 		log.Fatalln(err.Error())
@@ -57,7 +57,7 @@ func (r *UserRepository) DeleteUser(id string) {
 	}
 }
 
-func (r *UserRepository) FindUserById(id string) *User {
+func (r *Repository) FindUserById(id string) *User {
 	statement, err := r.db.Prepare("SELECT id, first_name, last_name, address_city, address_state FROM user where id = ?")
 	if err != nil {
 		log.Fatalln(err.Error())
@@ -76,7 +76,7 @@ func (r *UserRepository) FindUserById(id string) *User {
 	return &user
 }
 
-func (r *UserRepository) FindAllUsers() []*User {
+func (r *Repository) FindAllUsers() []*User {
 	row, err := r.db.Query("SELECT id, first_name, last_name, address_city, address_state FROM user")
 	if err != nil {
 		log.Fatal(err)

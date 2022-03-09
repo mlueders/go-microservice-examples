@@ -7,17 +7,17 @@ import (
 	"strings"
 )
 
-type userController struct {
-	service *UserService
+type controller struct {
+	service *Service
 }
 
-func SetupUserController(service *UserService) {
-	controller := userController{service: service}
+func SetupController(service *Service) {
+	controller := controller{service: service}
 	http.HandleFunc("/users", controller.userHandler)
 	http.HandleFunc("/users/", controller.userWithIdHandler)
 }
 
-func (c *userController) handleGetUsers(response http.ResponseWriter, request *http.Request) {
+func (c *controller) handleGetUsers(response http.ResponseWriter, request *http.Request) {
 	usersJson, err := json.Marshal(c.service.GetUsers())
 	if err != nil {
 		response.WriteHeader(http.StatusInternalServerError)
@@ -27,7 +27,7 @@ func (c *userController) handleGetUsers(response http.ResponseWriter, request *h
 	response.Write(usersJson)
 }
 
-func (c *userController) handleGetUser(response http.ResponseWriter, request *http.Request) {
+func (c *controller) handleGetUser(response http.ResponseWriter, request *http.Request) {
 	id := strings.TrimPrefix(request.URL.Path, "/users/")
 	user := c.service.GetUser(id)
 	if user == nil {
@@ -42,7 +42,7 @@ func (c *userController) handleGetUser(response http.ResponseWriter, request *ht
 	response.Write(userJson)
 }
 
-func (c *userController) handlePostUser(response http.ResponseWriter, request *http.Request) {
+func (c *controller) handlePostUser(response http.ResponseWriter, request *http.Request) {
 	var newUser AddUserRequest
 	bodyBytes, err := ioutil.ReadAll(request.Body)
 	if err != nil {
@@ -63,12 +63,12 @@ func (c *userController) handlePostUser(response http.ResponseWriter, request *h
 	response.Write(addedUserJson)
 }
 
-func (c *userController) handleDeleteUser(_ http.ResponseWriter, request *http.Request) {
+func (c *controller) handleDeleteUser(_ http.ResponseWriter, request *http.Request) {
 	id := strings.TrimPrefix(request.URL.Path, "/users/")
 	c.service.RemoveUser(id)
 }
 
-func (c *userController) userHandler(response http.ResponseWriter, request *http.Request) {
+func (c *controller) userHandler(response http.ResponseWriter, request *http.Request) {
 	switch request.Method {
 	case http.MethodGet:
 		c.handleGetUsers(response, request)
@@ -77,7 +77,7 @@ func (c *userController) userHandler(response http.ResponseWriter, request *http
 	}
 }
 
-func (c *userController) userWithIdHandler(response http.ResponseWriter, request *http.Request) {
+func (c *controller) userWithIdHandler(response http.ResponseWriter, request *http.Request) {
 	switch request.Method {
 	case http.MethodGet:
 		c.handleGetUser(response, request)

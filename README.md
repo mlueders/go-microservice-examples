@@ -1,6 +1,7 @@
 ## Links
 
 https://go.dev/play/
+https://go.dev/doc/effective_go
 https://github.com/golang/go/wiki/CodeReviewComments
 https://bmuschko.com/blog/go-testing-frameworks
 https://medium.com/agrea-technogies/basic-testing-patterns-in-go-d8501e360197
@@ -42,6 +43,11 @@ want to experiment with
   - logging
 - messaging
 - swagger
+- clients
+  - generation
+    - https://github.com/Stratoscale/swagger
+  - resilience
+    - retry + circuit breaker
 - config
 - dependency injection
   - https://github.com/google/wire
@@ -61,6 +67,9 @@ want to experiment with
 - how to handle optional data - input (json) and storage (sql, etc)
   - https://github.com/golang/go/issues/11939
   - https://github.com/guregu/null
+- database migrations
+  - https://github.com/golang-migrate/migrate
+  - https://github.com/pressly/goose
 
 struct copy options
 https://github.com/jinzhu/copier

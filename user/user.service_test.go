@@ -5,7 +5,7 @@ import (
 )
 
 func TestService(t *testing.T) {
-	service := NewUserService(repository)
+	service := NewService(repository)
 
 	t.Run("should add user", func(t *testing.T) {
 		userToAdd := AddUserRequest{

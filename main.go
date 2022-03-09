@@ -12,10 +12,10 @@ func main() {
 	db := initDb()
 	defer db.Close()
 
-	userRepository := user.NewUserRepository(db)
+	userRepository := user.NewRepository(db)
 	userRepository.CreateTables()
 
-	user.SetupUserController(user.NewUserService(userRepository))
+	user.SetupController(user.NewService(userRepository))
 	http.ListenAndServe(":8090", nil)
 }
 

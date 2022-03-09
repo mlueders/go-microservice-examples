@@ -4,25 +4,25 @@ import (
 	"github.com/google/uuid"
 )
 
-type UserService struct {
-	repository *UserRepository
+type Service struct {
+	repository *Repository
 }
 
-func NewUserService(repository *UserRepository) *UserService {
-	return &UserService{
+func NewService(repository *Repository) *Service {
+	return &Service{
 		repository: repository,
 	}
 }
 
-func (s *UserService) GetUser(id string) *User {
+func (s *Service) GetUser(id string) *User {
 	return s.repository.FindUserById(id)
 }
 
-func (s *UserService) GetUsers() []*User {
+func (s *Service) GetUsers() []*User {
 	return s.repository.FindAllUsers()
 }
 
-func (s *UserService) AddUser(userToAdd *AddUserRequest) *User {
+func (s *Service) AddUser(userToAdd *AddUserRequest) *User {
 	user := User{
 		Id:        uuid.New().String(),
 		FirstName: userToAdd.FirstName,
@@ -33,6 +33,6 @@ func (s *UserService) AddUser(userToAdd *AddUserRequest) *User {
 	return &user
 }
 
-func (s *UserService) RemoveUser(id string) {
+func (s *Service) RemoveUser(id string) {
 	s.repository.DeleteUser(id)
 }

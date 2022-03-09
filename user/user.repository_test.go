@@ -2,9 +2,9 @@ package user
 
 import "database/sql"
 
-var repository *UserRepository
+var repository *Repository
 
 func initUserRepository(db *sql.DB) {
-	repository = NewUserRepository(db)
+	repository = NewRepository(db)
 	repository.CreateTables()
 }
