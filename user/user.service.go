@@ -23,11 +23,13 @@ func (s *Service) GetUsers() []*User {
 }
 
 func (s *Service) AddUser(userToAdd *AddUserRequest) *User {
+	favoriteJoke := getRandomJoke()
 	user := User{
-		Id:        uuid.New().String(),
-		FirstName: userToAdd.FirstName,
-		LastName:  userToAdd.LastName,
-		Address:   userToAdd.Address,
+		Id:           uuid.New().String(),
+		FirstName:    userToAdd.FirstName,
+		LastName:     userToAdd.LastName,
+		Address:      userToAdd.Address,
+		FavoriteJoke: favoriteJoke,
 	}
 	s.repository.InsertUser(&user)
 	return &user

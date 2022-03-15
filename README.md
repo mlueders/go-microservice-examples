@@ -44,6 +44,7 @@ want to experiment with
 - messaging
 - swagger
 - clients
+  - https://github.com/go-resty/resty
   - generation
     - https://github.com/Stratoscale/swagger
   - resilience
