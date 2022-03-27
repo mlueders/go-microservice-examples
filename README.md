@@ -45,6 +45,7 @@ want to experiment with
 - swagger
 - clients
   - https://github.com/go-resty/resty
+  - https://github.com/levigross/grequests
   - generation
     - https://github.com/Stratoscale/swagger
   - resilience
