@@ -9,6 +9,7 @@ https://levelup.gitconnected.com/go-error-best-practice-f0864c5c2385
 https://github.com/swaggo/http-swagger
 https://gorm.io/docs/models.html
 https://github.com/pkg/errors
+https://lwn.net/Articles/821358/ - Testing in Go: philosophy and tools
 
 to learn
 - context
