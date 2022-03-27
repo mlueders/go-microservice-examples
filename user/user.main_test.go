@@ -18,7 +18,6 @@ func TestMain(m *testing.M) {
 	os.Exit(m.Run())
 }
 
-
 type SqlLiteDB struct {
 	db *sql.DB
 	file *os.File

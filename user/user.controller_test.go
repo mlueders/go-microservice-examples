@@ -4,9 +4,9 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"
-	"reflect"
 	"testing"
 )
 
@@ -32,12 +32,8 @@ func TestHttpHappyPath(t *testing.T) {
 		controller.handlePostUser(response, request)
 		json.Unmarshal(response.Body.Bytes(), &addUserResponse)
 
-		if addUserResponse.Id == "" {
-			t.Error("AddUser returned user with no id")
-		}
-		if addUserResponse.FirstName != addUserRequest.FirstName {
-			t.Errorf("FirstName == %q, want %q", addUserResponse.FirstName, addUserRequest.FirstName)
-		}
+		assert.NotEmpty(t, addUserResponse.Id)
+		assert.Equal(t, addUserResponse.FirstName, addUserRequest.FirstName)
 	})
 
 	t.Run("should GET user", func(t *testing.T) {
@@ -47,9 +43,7 @@ func TestHttpHappyPath(t *testing.T) {
 		getUserResponse := User{}
 		json.Unmarshal(response.Body.Bytes(), &getUserResponse)
 
-		if reflect.DeepEqual(addUserResponse, getUserResponse) == false {
-			t.Errorf("User == %+v, want %+v", getUserResponse, addUserResponse)
-		}
+		assert.Equal(t, addUserResponse, getUserResponse)
 	})
 
 	t.Run("should DELETE user", func(t *testing.T) {
@@ -61,8 +55,6 @@ func TestHttpHappyPath(t *testing.T) {
 		response = httptest.NewRecorder()
 		controller.handleGetUser(response, request)
 
-		if response.Code != http.StatusNotFound {
-			t.Errorf("Response == %q, want %q", response.Code, http.StatusNotFound)
-		}
+		assert.Equal(t, response.Code, http.StatusNotFound)
 	})
 }
