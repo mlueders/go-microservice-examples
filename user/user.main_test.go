@@ -8,32 +8,42 @@ import (
 )
 
 func TestMain(m *testing.M) {
-	// os.Exit skips defer calls, so we need to call another function
-	code, err := initDbAndRun(m)
+	db, err := OpenSqlLiteDB("sqllite-user-test.db")
 	if err != nil {
 		fmt.Println(err)
 	}
-	os.Exit(code)
+	defer db.Close()
+	initUserRepository(db.db)
+
+	os.Exit(m.Run())
 }
 
-func initDbAndRun(m *testing.M) (code int, err error) {
-	dbName := "sqllite-user-test.db"
-	os.Remove(dbName)
-	file, err := os.Create(dbName)
+
+type SqlLiteDB struct {
+	db *sql.DB
+	file *os.File
+}
+
+func OpenSqlLiteDB(name string) (*SqlLiteDB, error) {
+	os.Remove(name)
+	file, err := os.Create(name)
 	if err != nil {
-		return -1, fmt.Errorf("could not create db file: %w", err)
+		return nil, fmt.Errorf("could not create db file: %w", err)
 	}
 	file.Close()
 
 	db, err := sql.Open("sqlite3", file.Name())
 	if err != nil {
-		return -1, fmt.Errorf("could not connect to database: %w", err)
+		return nil, fmt.Errorf("could not connect to database: %w", err)
 	}
 
-	defer db.Close()
-	defer os.Remove(dbName)
+	return &SqlLiteDB{
+		db: db,
+		file: file,
+	}, nil
+}
 
-	initUserRepository(db)
-
-	return m.Run(), nil
+func (testDB *SqlLiteDB) Close() {
+	defer testDB.db.Close()
+	defer os.Remove(testDB.file.Name())
 }
