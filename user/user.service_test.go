@@ -1,13 +1,9 @@
 package user
 
-import (
-	"testing"
-)
-
-func TestService(t *testing.T) {
+func (suite *UserTestSuite) TestService() {
 	service := NewService(repository)
 
-	t.Run("should add user", func(t *testing.T) {
+	suite.Run("should add user", func() {
 		userToAdd := AddUserRequest{
 			FirstName: "first",
 			LastName:  "last",
@@ -18,27 +14,19 @@ func TestService(t *testing.T) {
 		}
 
 		addedUser := service.AddUser(&userToAdd)
-		if addedUser == nil {
-			t.Errorf("AddUser returned nil")
-		}
-		if addedUser.Id == "" {
-			t.Error("AddUser returned user with no id")
-		}
-		if addedUser.FirstName != userToAdd.FirstName {
-			t.Errorf("FirstName == %q, want %q", addedUser.FirstName, userToAdd.FirstName)
-		}
-		if addedUser.LastName != userToAdd.LastName {
-			t.Errorf("LastName == %q, want %q", addedUser.LastName, userToAdd.LastName)
-		}
-		if addedUser.Address.State != userToAdd.Address.State {
-			t.Errorf("Address.State == %q, want %q", addedUser.Address.State, userToAdd.Address.State)
-		}
-		if addedUser.Address.City != userToAdd.Address.City {
-			t.Errorf("Address.City mismatch == %q, want %q", addedUser.Address.City, userToAdd.Address.City)
-		}
+		suite.NotNil(addedUser, "AddUser returned nil")
+		suite.NotEmpty(addedUser.Id, "AddUser returned user with no id")
+		suite.Equal(userToAdd.FirstName, addedUser.FirstName,
+			"FirstName == %q, want %q", addedUser.FirstName, userToAdd.FirstName)
+		suite.Equal(userToAdd.LastName, addedUser.LastName,
+			"LastName == %q, want %q", addedUser.LastName, userToAdd.LastName)
+		suite.Equal(userToAdd.Address.State, addedUser.Address.State,
+			"Address.State == %q, want %q", addedUser.Address.State, userToAdd.Address.State)
+		suite.Equal(userToAdd.Address.City, addedUser.Address.City,
+			"Address.City mismatch == %q, want %q", addedUser.Address.City, userToAdd.Address.City)
 	})
 
-	t.Run("should retrieve added user", func (t *testing.T) {
+	suite.Run("should retrieve added user", func () {
 		userToAdd := AddUserRequest{
 			FirstName: "first",
 			LastName:  "last",
@@ -51,24 +39,18 @@ func TestService(t *testing.T) {
 		addedUser := service.AddUser(&userToAdd)
 		retrievedUser := service.GetUser(addedUser.Id)
 
-		if retrievedUser == nil {
-			t.Errorf("GetUser returned nil")
-		}
-		if retrievedUser.FirstName != userToAdd.FirstName {
-			t.Errorf("FirstName == %q, want %q", retrievedUser.FirstName, userToAdd.FirstName)
-		}
-		if retrievedUser.LastName != userToAdd.LastName {
-			t.Errorf("LastName == %q, want %q", retrievedUser.LastName, userToAdd.LastName)
-		}
-		if retrievedUser.Address.State != userToAdd.Address.State {
-			t.Errorf("Address.State == %q, want %q", retrievedUser.Address.State, userToAdd.Address.State)
-		}
-		if retrievedUser.Address.City != userToAdd.Address.City {
-			t.Errorf("Address.City == %q, want %q", retrievedUser.Address.City, userToAdd.Address.City)
-		}
+		suite.NotNil(retrievedUser, "GetUser returned nil")
+		suite.Equal(userToAdd.FirstName, retrievedUser.FirstName,
+			"FirstName == %q, want %q", retrievedUser.FirstName, userToAdd.FirstName)
+		suite.Equal(userToAdd.LastName, retrievedUser.LastName,
+			"LastName == %q, want %q", retrievedUser.LastName, userToAdd.LastName)
+		suite.Equal(userToAdd.Address.State, retrievedUser.Address.State,
+			"Address.State == %q, want %q", retrievedUser.Address.State, userToAdd.Address.State)
+		suite.Equal(userToAdd.Address.City, retrievedUser.Address.City,
+			"Address.City == %q, want %q", retrievedUser.Address.City, userToAdd.Address.City)
 	})
 
-	t.Run("should delete user", func(t *testing.T) {
+	suite.Run("should delete user", func() {
 		userToAdd := AddUserRequest{
 			FirstName: "first",
 			LastName:  "last",
@@ -79,15 +61,11 @@ func TestService(t *testing.T) {
 		}
 
 		addedUser := service.AddUser(&userToAdd)
-		if addedUser == nil {
-			t.Errorf("AddUser returned nil")
-		}
+		suite.NotNil(addedUser, "AddUser returned nil")
 
 		service.RemoveUser(addedUser.Id)
 
 		retrievedUser := service.GetUser(addedUser.Id)
-		if retrievedUser != nil {
-			t.Errorf("GetUser returned user after removal")
-		}
+		suite.Nil(retrievedUser, "GetUser returned user after removal")
 	})
 }

@@ -3,21 +3,25 @@ package user
 import (
 	"database/sql"
 	"fmt"
+	"github.com/stretchr/testify/suite"
 	"os"
 	"testing"
 )
 
-func TestMain(m *testing.M) {
-	db, err := OpenSqlLiteDB("sqllite-user-test.db")
-	if err != nil {
-		fmt.Println(err)
-	}
-	defer db.Close()
-	initUserRepository(db.db)
-
-	os.Exit(m.Run())
+type UserTestSuite struct {
+	suite.Suite
 }
 
+func TestUserTestSuite(t *testing.T) {
+	db, err := OpenSqlLiteDB("sqllite-user-test.db")
+	if err != nil {
+		t.Error(err)
+	}
+	defer db.Close()
+
+	initUserRepository(db.db)
+	suite.Run(t, new(UserTestSuite))
+}
 
 type SqlLiteDB struct {
 	db *sql.DB

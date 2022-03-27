@@ -7,10 +7,9 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"reflect"
-	"testing"
 )
 
-func TestHttpHappyPath(t *testing.T) {
+func (suite *UserTestSuite) TestHttpHappyPath() {
 	service := NewService(repository)
 	controller := &controller{service: service}
 
@@ -24,7 +23,7 @@ func TestHttpHappyPath(t *testing.T) {
 	}
 	addUserResponse := User{}
 
-	t.Run("should POST user", func(t *testing.T) {
+	suite.Run("should POST user", func() {
 		requestBody, _ := json.Marshal(addUserRequest)
 
 		request, _ := http.NewRequest(http.MethodPost, "/users", bytes.NewReader(requestBody))
@@ -32,27 +31,24 @@ func TestHttpHappyPath(t *testing.T) {
 		controller.handlePostUser(response, request)
 		json.Unmarshal(response.Body.Bytes(), &addUserResponse)
 
-		if addUserResponse.Id == "" {
-			t.Error("AddUser returned user with no id")
-		}
-		if addUserResponse.FirstName != addUserRequest.FirstName {
-			t.Errorf("FirstName == %q, want %q", addUserResponse.FirstName, addUserRequest.FirstName)
-		}
+		suite.NotEmpty(addUserResponse.Id,
+			"AddUser returned user with no id")
+		suite.Equal(addUserResponse.FirstName, addUserRequest.FirstName,
+			"FirstName == %q, want %q", addUserResponse.FirstName, addUserRequest.FirstName)
 	})
 
-	t.Run("should GET user", func(t *testing.T) {
+	suite.Run("should GET user", func() {
 		request, _ := http.NewRequest(http.MethodGet, fmt.Sprintf("/users/%s", addUserResponse.Id), nil)
 		response := httptest.NewRecorder()
 		controller.handleGetUser(response, request)
 		getUserResponse := User{}
 		json.Unmarshal(response.Body.Bytes(), &getUserResponse)
 
-		if reflect.DeepEqual(addUserResponse, getUserResponse) == false {
-			t.Errorf("User == %+v, want %+v", getUserResponse, addUserResponse)
-		}
+		suite.True(reflect.DeepEqual(addUserResponse, getUserResponse),
+			"User == %+v, want %+v", getUserResponse, addUserResponse)
 	})
 
-	t.Run("should DELETE user", func(t *testing.T) {
+	suite.Run("should DELETE user", func() {
 		request, _ := http.NewRequest(http.MethodDelete, fmt.Sprintf("/users/%s", addUserResponse.Id), nil)
 		response := httptest.NewRecorder()
 		controller.handleDeleteUser(response, request)
@@ -61,8 +57,7 @@ func TestHttpHappyPath(t *testing.T) {
 		response = httptest.NewRecorder()
 		controller.handleGetUser(response, request)
 
-		if response.Code != http.StatusNotFound {
-			t.Errorf("Response == %q, want %q", response.Code, http.StatusNotFound)
-		}
+		suite.Equal(response.Code, http.StatusNotFound,
+			"Response == %q, want %q", response.Code, http.StatusNotFound)
 	})
 }
