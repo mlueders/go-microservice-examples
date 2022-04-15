@@ -17,6 +17,14 @@ func SetupController(service *Service) {
 	http.HandleFunc("/users/", controller.userWithIdHandler)
 }
 
+// GetUsers godoc
+// @Summary      List users
+// @Description  get all users
+// @Tags         Users
+// @Accept       json
+// @Produce      json
+// @Success      200  {object}  []User
+// @Router       /users [get]
 func (c *controller) handleGetUsers(response http.ResponseWriter, request *http.Request) {
 	usersJson, err := json.Marshal(c.service.GetUsers())
 	if err != nil {
@@ -27,6 +35,14 @@ func (c *controller) handleGetUsers(response http.ResponseWriter, request *http.
 	response.Write(usersJson)
 }
 
+// GetUsers godoc
+// @Summary      Get user
+// @Description  get users by id
+// @Tags         Users
+// @Accept       json
+// @Produce      json
+// @Success      200  {object}  User
+// @Router       /users/{id} [get]
 func (c *controller) handleGetUser(response http.ResponseWriter, request *http.Request) {
 	id := strings.TrimPrefix(request.URL.Path, "/users/")
 	user := c.service.GetUser(id)

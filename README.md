@@ -1,3 +1,13 @@
+## Swag
+
+Install the client
+`go install github.com/swaggo/swag/cmd/swag@latest`
+
+Generate the docs
+`swag init`
+
+Run the app and navigate to http://localhost:8090/swagger
+
 ## Links
 
 https://go.dev/play/
